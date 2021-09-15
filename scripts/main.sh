@@ -123,6 +123,8 @@ function generate_initramfs() {
 		&& modules+=("crypt crypt-gpg")
 	[[ $USED_BTRFS == "true" ]] \
 		&& modules+=("btrfs")
+	[[ $USED_F@FS == "true" ]] \
+		&& modules+=("f2fs")
 	[[ $USED_ZFS == "true" ]] \
 		&& modules+=("zfs")
 

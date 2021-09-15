@@ -25,6 +25,8 @@ USED_LUKS=false
 USED_ZFS=false
 # Flag to track usage of btrfs
 USED_BTRFS=false
+# Flag to track usage of F2FS
+USED_F2FS=false
 # Flag to track usage of encryption
 USED_ENCRYPTION=false
 
@@ -223,7 +225,7 @@ function format() {
 	declare -A arguments; parse_arguments "$@"
 
 	verify_existing_id id
-	verify_option type bios efi swap ext4 btrfs
+	verify_option type bios efi swap ext4 btrfs f2fs
 
 	local type="${arguments[type]}"
 	if [[ "$type" == "btrfs" ]]; then
@@ -325,6 +327,9 @@ function create_classic_single_disk_layout() {
 	elif [[ $root_fs == "ext4" ]]; then
 		DISK_ID_ROOT_TYPE="ext4"
 		DISK_ID_ROOT_MOUNT_OPTS="defaults,noatime,errors=remount-ro,discard"
+	elif [[ $root_fs == "f2fs" ]]; then
+		DISK_ID_ROOT_TYPE="f2fs"
+		DISK_ID_ROOT_MOUNT_OPTS="extra_attr,inode_checksum,sb_checksum"
 	else
 		die "Unsupported root filesystem type"
 	fi

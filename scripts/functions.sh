@@ -81,6 +81,8 @@ function prepare_installation_environment() {
 
 	[[ $USED_BTRFS == "true" ]] \
 		&& needed_programs+=(btrfs)
+	[[ $USED_F2FS == "true" ]] \
+		&& needed_programs+=(f2fs-tools)
 	[[ $USED_ZFS == "true" ]] \
 		&& needed_programs+=(zfs)
 	[[ $USED_RAID == "true" ]] \
@@ -400,6 +402,17 @@ function disk_format() {
 					|| die "Could not format device '$device' ($id)"
 			fi
 			;;
+                'f2fs')
+                        if [[ -v "arguments[label]" ]]; then
+                                mkfs.f2fs -q -l "$label" "$device" \
+                                        || die "Could not format device '$device' ($id)"
+                        else
+                                mkfs.f2fs -q "$device" \
+                                        || die "Could not format device '$device' ($id)"
+                        fi
+
+                        init_f2fs "$device" "'$device' ($id)"
+                        ;;
 		'btrfs')
 			if [[ -v "arguments[label]" ]]; then
 				mkfs.btrfs -q -L "$label" "$device" \
